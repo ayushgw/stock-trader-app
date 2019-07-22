@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <app-header></app-header>
     <div class="row">
       <div class="col-xs-12">
@@ -20,6 +20,6 @@ export default {
 
 <style>
 body {
-    padding: 30px;
+  padding: 30px 120px;
 }
 </style>
