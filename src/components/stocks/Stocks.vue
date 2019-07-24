@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-wrap p-4">
+  <div class="d-flex flex-wrap flex p-4">
     <app-stock v-for="(stock, index) in stocks" :key="index" :stock="stock"></app-stock>
   </div>
 </template>

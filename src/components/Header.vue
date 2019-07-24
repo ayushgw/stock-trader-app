@@ -13,12 +13,15 @@
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="#">
+          <button class="nav-link btn btn-link" @click="endDay">
             End Day
             <span class="sr-only">(current)</span>
-          </a>
+          </button>
         </li>
-        <li class="nav-item dropdown">
+        <li
+          class="nav-item dropdown"
+          @click="isDropdownOpen = !isDropdownOpen"
+        >
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -28,12 +31,40 @@
             aria-haspopup="true"
             aria-expanded="false"
           >Save &amp; Load</a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Save Data</a>
-            <a class="dropdown-item" href="#">Load Data</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown" :class="{show: isDropdownOpen}">
+            <a class="dropdown-item" @click="saveData" href="#">Save Data</a>
+            <a class="dropdown-item" @click="loadData" href="#">Load Data</a>
           </div>
         </li>
       </ul>
+      <strong class="navbar-text ml-3">Funds: {{funds | currency}}</strong>
     </div>
   </nav>
 </template>
+
+<script>
+import { mapActions } from "vuex";
+
+export default {
+  data() {
+    return {
+      isDropdownOpen: false
+    };
+  },
+  computed: {
+    funds() {
+      return this.$store.getters.funds;
+    }
+  },
+  methods: {
+    ...mapActions(["randomizeStocks"]),
+    endDay() {
+      this.randomizeStocks();
+    },
+    saveData() {
+      const data = {};
+    },
+    loadData() {}
+  }
+};
+</script>

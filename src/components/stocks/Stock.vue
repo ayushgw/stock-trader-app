@@ -7,9 +7,21 @@
       </h5>
       <div class="card-body">
         <div class="d-flex">
-          <input type="number" class="form-control" placeholder="Quantity" v-model.number="quantity" />
-          <div class="mx-2">
-            <button class="btn btn-success" @click="buyStock" :disabled="quantity <= 0 || !Number.isInteger(quantity)">Buy</button>
+          <div class="w-50">
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Quantity"
+              v-model.number="quantity"
+              :class="{'border border-danger shadow-none' : insufficientFunds}"
+            />
+          </div>
+          <div class="mx-2 flex-fill text-right">
+            <button
+              class="btn btn-success"
+              @click="buyStock"
+              :disabled="insufficientFunds || quantity <= 0 || !Number.isInteger(quantity)"
+            >{{ insufficientFunds ? 'Low Funds' : 'Buy'}}</button>
           </div>
         </div>
       </div>
@@ -19,22 +31,30 @@
 
 <script>
 export default {
-    props: ["stock"],
-    data() {
-        return {
-            quantity: 0
-        }
+  props: ["stock"],
+  data() {
+    return {
+      quantity: 0
+    };
+  },
+  computed: {
+    funds() {
+      return this.$store.getters.funds;
     },
-    methods: {
-        buyStock() {
-            const order = {
-                stockId: this.stock.id,
-                stockPrice: this.stock.price,
-                stockQuantity: this.quantity
-            };
-            console.log(order);
-            this.quantity = 0;
-        }
+    insufficientFunds() {
+      return this.quantity * this.stock.price >= this.funds;
     }
-}
+  },
+  methods: {
+    buyStock() {
+      const order = {
+        stockId: this.stock.id,
+        stockPrice: this.stock.price,
+        stockQuantity: this.quantity
+      };
+      this.$store.dispatch("buyStock", order);
+      this.quantity = 0;
+    }
+  }
+};
 </script>
