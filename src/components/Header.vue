@@ -18,10 +18,7 @@
             <span class="sr-only">(current)</span>
           </button>
         </li>
-        <li
-          class="nav-item dropdown"
-          @click="isDropdownOpen = !isDropdownOpen"
-        >
+        <li class="nav-item dropdown" @click="isDropdownOpen = !isDropdownOpen">
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -31,9 +28,13 @@
             aria-haspopup="true"
             aria-expanded="false"
           >Save &amp; Load</a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown" :class="{show: isDropdownOpen}">
-            <a class="dropdown-item" @click="saveData" href="#">Save Data</a>
-            <a class="dropdown-item" @click="loadData" href="#">Load Data</a>
+          <div
+            class="dropdown-menu"
+            aria-labelledby="navbarDropdown"
+            :class="{show: isDropdownOpen}"
+          >
+            <button class="btn btn-link dropdown-item" @click="saveData">Save Data</button>
+            <button class="btn btn-link dropdown-item" @click="loadData">Load Data</button>
           </div>
         </li>
       </ul>
@@ -44,6 +45,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -52,19 +54,31 @@ export default {
     };
   },
   computed: {
-    funds() {
-      return this.$store.getters.funds;
-    }
+    ...mapGetters({
+      funds: "funds",
+      portfolio: "stockPortfolio",
+      stocks: "stocks"
+    })
   },
   methods: {
-    ...mapActions(["randomizeStocks"]),
+    ...mapActions({
+      randomizeStocks: "randomizeStocks",
+      fetchData: "loadData"
+    }),
     endDay() {
       this.randomizeStocks();
     },
     saveData() {
-      const data = {};
+      const data = {
+        funds: this.funds,
+        portfolio: this.portfolio,
+        stocks: this.stocks
+      };
+      this.$http.put("data.json", data);
     },
-    loadData() {}
+    loadData() {
+      this.fetchData();
+    }
   }
 };
 </script>
